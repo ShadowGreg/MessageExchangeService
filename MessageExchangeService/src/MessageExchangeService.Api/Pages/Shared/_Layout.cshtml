@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - My Application</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+<header>
+    <nav>
+        <ul>
+            <li><a href="/swagger/index.html">Swagger</a></li>
+            <li><a href="/client1">Client 1</a></li>
+            <li><a href="/client2">Client 2</a></li>
+            <li><a href="/client3">Client 3</a></li>
+        </ul>
+    </nav>
+</header>
+<div class="container">
+    @RenderBody()
+</div>
+
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

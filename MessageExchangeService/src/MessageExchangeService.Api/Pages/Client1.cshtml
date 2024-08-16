@@ -1,0 +1,54 @@
+﻿@page "/client1"
+@model MessageExchangeService.Api.Pages.Client1Model
+@{
+Layout = "_Layout";
+}
+
+<h1>Client 1: Send Message</h1>
+
+<form id="messageForm">
+    <div>
+        <label>Message Content (max 128 chars):</label>
+        <input type="text" id="MessageContent" maxlength="128" required />
+    </div>
+    <div>
+        <label>Sequence Number:</label>
+        <input type="number" id="SequenceNumber" required />
+    </div>
+    <button type="submit" onclick="submitForm()">Send</button>
+</form>
+
+@if (Model.Success)
+{
+<p>Message sent successfully at @DateTime.UtcNow.ToString("u")!</p> <!-- Отображение текущего времени -->
+}
+
+@section Scripts {
+<script>
+    function submitForm() {
+        event.preventDefault();
+
+        const messageContent = document.getElementById('MessageContent').value;
+        const sequenceNumber = document.getElementById('SequenceNumber').value;
+
+        fetch('http://localhost:5252/api/messages', { // Используем правильный путь для API
+            method: 'POST', // Отправляем POST запрос
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ Content: messageContent, SequenceNumber: sequenceNumber })
+        })
+            .then(response => {
+                if (response.ok) {
+                    location.reload(); // Перезагружаем страницу для отображения сообщения об успешной отправке
+                } else {
+                    console.error('Failed to send message:', response.statusText);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Убедитесь, что скрипт загружается и исполняется
+    console.log("Script loaded and ready to handle form submission.");
+</script>
+}

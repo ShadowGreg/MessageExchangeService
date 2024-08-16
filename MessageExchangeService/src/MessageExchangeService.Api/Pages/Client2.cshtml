@@ -1,0 +1,47 @@
+﻿@page "/client2"
+@model  MessageExchangeService.Api.Pages.Client2Model
+@{
+    Layout = "_Layout"; // Убедитесь, что макет подключен, если нужно
+}
+
+<h1>Client 2: Real-Time Messages</h1>
+
+<ul id="messages">
+    @foreach (var message in Model.Messages)
+    {
+        <li>@($"{message.SequenceNumber} - {message.Content} @ {message.Timestamp.ToLocalTime()}")</li>
+    }
+</ul>
+
+<button type="button" onclick="loadMessages()">Load Messages</button>
+
+@section Scripts {
+    <script>
+        async function loadMessages() {
+            const start = new Date(new Date().getTime() - 3600000).toISOString(); // 1 час назад
+            const end = new Date().toISOString(); // текущее время
+
+            const response = await fetch(`http://localhost:5252/api/messages?start=${start}&end=${end}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const messages = await response.json();
+                const messagesList = document.getElementById('messages');
+                messagesList.innerHTML = ''; // Очистить список перед добавлением новых сообщений
+                messages.forEach(message => {
+                    const messageElement = document.createElement('li');
+                    messageElement.textContent = `#${message.sequenceNumber} - ${message.content}  ${new Date(message.timestamp).toLocaleTimeString()}`;
+                    messagesList.appendChild(messageElement);
+                });
+            } else {
+                console.error('Failed to load messages:', response.statusText);
+            }
+        }
+
+        setInterval(loadMessages, 10000);
+    </script>
+}

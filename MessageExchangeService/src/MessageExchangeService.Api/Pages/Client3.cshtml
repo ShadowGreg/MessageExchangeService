@@ -1,0 +1,54 @@
+﻿@page "/client3"
+@model MessageExchangeService.Api.Pages.Client3Model
+@{
+    Layout = "_Layout";  
+}
+<h1>Client 3: Recent Messages</h1>
+
+<label for="minuteSelect">Select Minutes:</label>
+<select id="minuteSelect">
+    @for (int i = 1; i <= 10; i++)
+    {
+        <option value="@i">@i minute(s) ago</option>
+    }
+</select>
+
+<button type="button" onclick="loadRecentMessages()">Load Messages</button>
+
+<ul id="messages">
+    @foreach (var message in Model.RecentMessages)
+    {
+        <li>@message.SequenceNumber - @message.Content @message.Timestamp.ToLocalTime()</li>
+    }
+</ul>
+
+@section Scripts {
+    <script>
+        async function loadRecentMessages() {
+            const minutesAgo = document.getElementById('minuteSelect').value;
+            const end = new Date().toISOString(); // Текущее время
+            const start = new Date(new Date().getTime() - minutesAgo * 60000).toISOString(); // Время с учетом выбранного количества минут назад
+
+            const response = await fetch(`/api/messages?start=${start}&end=${end}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const messages = await response.json();
+                const messagesList = document.getElementById('messages');
+                messagesList.innerHTML = ''; // Очистка текущего списка
+
+                messages.forEach(message => {
+                    const li = document.createElement('li');
+                    li.textContent = `${message.sequenceNumber} - ${message.content} ${new Date(message.timestamp).toLocaleTimeString()}`;
+                    messagesList.appendChild(li);
+                });
+            } else {
+                console.error('Failed to load messages:', response.statusText);
+            }
+        }
+    </script>
+}
