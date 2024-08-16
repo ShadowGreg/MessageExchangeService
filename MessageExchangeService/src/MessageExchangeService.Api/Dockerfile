@@ -14,7 +14,7 @@ USER app
 EXPOSE 5252
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
+ARG BUILD_CONFIGURATION=Development
 WORKDIR /src
 COPY ["MessageExchangeService/src/MessageExchangeService.Api/MessageExchangeService.Api.csproj", "MessageExchangeService/src/MessageExchangeService.Api/"]
 COPY ["MessageExchangeService/src/MessageExchangeService.infrastructure/MessageExchangeService.infrastructure.csproj", "MessageExchangeService/src/MessageExchangeService.infrastructure/"]
