@@ -13,7 +13,7 @@ builder.Services.AddHttpClient();
 
 // Чтение строки подключения из конфигурации
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-var urls = builder.Configuration.GetValue<string>("Urls") ?? "http://localhost:5252";
+var urls = builder.Configuration.GetValue<string>("Urls") ?? "http://*:5252";
 builder.WebHost.UseUrls(urls);
 
 // Добавляем CORS
@@ -21,7 +21,7 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
     {
-        builder.WithOrigins(urls ?? "http://localhost:5252") 
+        builder.WithOrigins(urls ?? "http://*:5252") 
             .AllowAnyHeader()
             .AllowAnyMethod();
     });

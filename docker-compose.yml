@@ -1,9 +1,9 @@
-﻿version: '3.8'
+﻿version: '3'
 
 services:
   
   postgres:
-    image: "postgres:13"
+    image: postgres
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: 1
@@ -11,10 +11,9 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres-data:/var/lib/postgresql/data
-      
+      - postgres_data:/var/lib/postgresql/data
+  
   web:
-    image: messageexchangeservice.api
     build:
       context: .
       dockerfile: MessageExchangeService/src/MessageExchangeService.Api/Dockerfile
@@ -22,9 +21,10 @@ services:
       - "5252:5252"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Host=database;Port=5432;Database=messagesdb;Username=postgres;Password=1
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=messagesdb;Username=postgres;Password=1
+      - ASPNETCORE_URLS=http://+:5252
     depends_on:
-      - database  
-  
+      - postgres
+
 volumes:
   postgres_data:

@@ -1,8 +1,17 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER $APP_UID
 WORKDIR /app
-EXPOSE 5252  
-EXPOSE 5252  
+
+# Переключаемся на пользователя root для установки пакетов
+USER root
+
+# Устанавливаем curl и wget
+RUN apt-get update && apt-get install -y curl wget
+
+# Возвращаемся к пользователю, используемому для выполнения приложения (например, app)
+USER app
+
+EXPOSE 5252
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
